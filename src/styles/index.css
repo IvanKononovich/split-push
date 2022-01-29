@@ -1,0 +1,101 @@
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  place-content: center;
+  place-items: center;
+  overflow-y: hidden;
+  overflow-x: auto;
+  font-family: "Courier New", Courier, monospace;
+
+  --box-size: 30px;
+  --entity-size: 30px;
+}
+
+#app {
+  display: flex;
+  place-content: center;
+  place-items: flex-end;
+  box-sizing: border-box;
+  padding: 50px 15px;
+}
+
+.column {
+  display: flex;
+  place-content: flex-end;
+  place-items: stretch;
+  flex-direction: column;
+  margin: 0 5px;
+}
+
+.box {
+  min-height: var(--box-size);
+  border: 2px solid black;
+  flex-shrink: 0;
+  margin: 5px 0;
+  display: flex;
+  place-content: center;
+  place-items: stretch;
+  min-width: var(--entity-size);
+}
+
+.finish {
+  cursor: pointer;
+  background-color: yellowgreen;
+  color: black;
+  text-align: center;
+  padding: 5px;
+}
+
+.entity {
+  cursor: pointer;
+  background-color: red;
+  min-width: var(--entity-size);
+  width: 100%;
+  height: var(--entity-size);
+  display: flex;
+  place-content: center;
+  place-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.entity__level {
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.user {
+  background-color: green;
+  min-width: var(--entity-size);
+  width: 100%;
+  height: var(--entity-size);
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.user__level {
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.counter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
+  color: white;
+  padding: 15px;
+  font-size: 25px;
+}
