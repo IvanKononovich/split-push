@@ -1,19 +1,19 @@
-if (!localStorage.getItem("complexity")) {
+let complexity = +(localStorage.getItem("complexity") || 0);
+if (!complexity) {
   localStorage.setItem("complexity", 1);
+  complexity = 1;
 }
 
-const MAX_LEVEL_HEIGHT = 5 + +localStorage.getItem("complexity");
-const LEVEL_WIDTH = 5 * +localStorage.getItem("complexity");
+const MAX_LEVEL_HEIGHT = 2 + Math.round(complexity / 3);
+const LEVEL_WIDTH = 2 + complexity;
 
-const getRandomArbitrary = (min, max) => {
+const getRandom = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
 };
 
 const levelMap = [
   1,
-  ...new Array(LEVEL_WIDTH)
-    .fill(null)
-    .map(() => getRandomArbitrary(2, MAX_LEVEL_HEIGHT)),
+  ...new Array(LEVEL_WIDTH).fill(MAX_LEVEL_HEIGHT),
   "finish",
 ];
 const place = [];
@@ -25,12 +25,20 @@ const getEntityLevel = () => {
     return level;
   }
 
-  level = place.reduce((acc, column) => {
-    const columnSumLevel = column.reduce(
-      (columnAccLevel, { level }) => columnAccLevel + level,
-      0
-    );
-    return getRandomArbitrary(1, acc + columnSumLevel);
+  level = place.reduce((acc, column, columnIndex) => {
+    const prevColumn = place[columnIndex - 1];
+    let prevMin = 1;
+    if (prevColumn) {
+      prevMin = Math.min(...prevColumn.map(({ level }) => level)) + 1;
+    }
+    const columnSumLevel = column.reduce((columnAccLevel, { level }, index) => {
+      let accColumnAccLevel = columnAccLevel;
+      if (index < column.length - 1) {
+        accColumnAccLevel += level;
+      }
+      return accColumnAccLevel;
+    }, 0);
+    return getRandom(prevMin, acc + columnSumLevel);
   }, level);
 
   return level;
@@ -42,6 +50,7 @@ const getFinishLevel = () => {
   return Math.round(level);
 };
 
+let resolveUserPromise = null;
 const generateLevel = () => {
   for (let widthIndex = 0; widthIndex < levelMap.length; widthIndex++) {
     const column = new Column();
@@ -70,7 +79,9 @@ const generateLevel = () => {
         });
         place[widthIndex].push(entity);
       } else {
-        setTimeout(() => {
+        new Promise((resolve) => {
+          resolveUserPromise = resolve;
+        }).then(() => {
           user = new Entity({
             level: 1,
             position: {
@@ -81,11 +92,13 @@ const generateLevel = () => {
             place,
           });
           place[widthIndex][heightIndex] = user;
-        }, 1000);
+        });
         place[widthIndex].push({ level: 1 });
       }
     }
   }
+
+  resolveUserPromise();
 };
 
 generateLevel();

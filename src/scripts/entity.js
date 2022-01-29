@@ -8,7 +8,10 @@ class Entity {
     this.died = false;
     this.type = type;
 
-    this.maxMove = Math.round(place.flat().length / 2);
+    this.maxMove = Math.max(
+      Math.ceil(place.flat().length / 2.7),
+      place.length - 1
+    );
 
     this.homeBox = this.getBox(position);
 
@@ -77,9 +80,14 @@ class Entity {
   }
 
   winner() {
-    alert(`Вы выйграли, ваш уровень ${this.level}!`);
-    window.location.reload();
-    localStorage.setItem("complexity", 1 + +localStorage.getItem("complexity"));
+    setTimeout(() => {
+      alert(`Вы выйграли, ваш уровень ${this.level}!`);
+      window.location.reload();
+      localStorage.setItem(
+        "complexity",
+        1 + +localStorage.getItem("complexity")
+      );
+    });
   }
 
   attack(position) {
